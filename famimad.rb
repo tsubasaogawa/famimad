@@ -23,6 +23,9 @@ WATCHING_FILE = '/tmp/famima.log'
 # Path to famima sound
 FAMIMA_FILE = '/home/pi/dev/famima/famima.wav'
 
+# Minimum time between triggers (sec.)
+MIN_TRIGGER_TIME = 15
+
 # A loop interval (sec.)
 WAIT_SEC = 1
 
@@ -42,7 +45,7 @@ end
 # Watching the log file outputted by motion
 class MotionWatch
   def initialize
-    @modified_time = nil
+    @modified_time = 0
   end
 
   def triggered?
@@ -50,15 +53,14 @@ class MotionWatch
 
     # get timestamps of the log file
     file = File::stat(WATCHING_FILE)
-    new_modified_time = file.mtime.to_s
+    new_modified_time = file.mtime.to_i # sec (total)
 
     # modified (equals: motion detected)
-    if @modified_time != new_modified_time
+    if @modified_time != new_modified_time and (new_modified_time - @modified_time) > MIN_TRIGGER_TIME
       @modified_time = new_modified_time
       debug("motion triggered at #{new_modified_time}")
       true
     else
-      debug("not triggered")
       false
     end
   end
@@ -78,7 +80,7 @@ end
 # for debugging
 def debug(text)
   # STDERR.puts(text)
-  system("echo #{text} >> #{FAMIMAD_LOG}")
+  # system("echo #{text} >> #{FAMIMAD_LOG}")
 end
 
 # main proc.
