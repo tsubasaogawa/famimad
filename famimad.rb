@@ -11,10 +11,10 @@ require 'daemons'
 # Path to a sound player
 PLAYER_BIN = 'aplay'
 
-# Path for a log file
+# Path for a log file which famimad will output
 FAMIMAD_LOG = '/tmp/famimad_log'
 
-# Path to the log file which MOTION outputs
+# Path to the log file which motion outputs
 WATCHING_FILE = '/tmp/motion_triggered.log'
 
 # Path to famima sound
@@ -31,13 +31,14 @@ WAIT_SEC = 1
 # Watching the log file outputted by motion
 class MotionWatch
   def initialize
+    debug("MotionWatch initialized")
     @modified_time = 0
   end
 
   def triggered?
     return false if ! File.exist?(WATCHING_FILE)
 
-    # get timestamps of the log file
+    # get a timestamp of the log file
     file = File::stat(WATCHING_FILE)
     new_modified_time = file.mtime.to_i # sec (total)
 
@@ -55,6 +56,7 @@ end
 # playing famima sound
 class FamimaSound
   def initialize
+    debug("FamimaSound initialized")
   end
 
   def play
@@ -63,7 +65,7 @@ class FamimaSound
   end
 end
 
-# for debugging
+# for debug
 def debug(text)
   # STDERR.puts(text)
   system("echo #{text} >> #{FAMIMAD_LOG}")
@@ -71,7 +73,6 @@ end
 
 # main proc.
 Daemons.run_proc(File.basename(__FILE__)) do
-
   # initialize
   mw = MotionWatch.new
   famima = FamimaSound.new
