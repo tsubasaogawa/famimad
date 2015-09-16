@@ -31,8 +31,8 @@ WAIT_SEC = 1
 # Watching the log file outputted by motion
 class MotionWatch
   def initialize
-    debug("MotionWatch initialized")
     @modified_time = 0
+    debug("MotionWatch initialized")
   end
 
   def triggered?
@@ -61,7 +61,7 @@ class FamimaSound
 
   def play
     system("#{PLAYER_BIN} #{FAMIMA_FILE}")
-    debug("played")
+    debug("FamimaSound was played")
   end
 end
 
