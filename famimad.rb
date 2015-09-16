@@ -8,9 +8,6 @@ require 'daemons'
 
 # ------------- Settings ------------- # 
 
-# Path to Aquestalk binary
-AQUESTALK_BIN = '/usr/local/bin/AquesTalkPi'
-
 # Path to a sound player
 PLAYER_BIN = 'aplay'
 
@@ -18,7 +15,7 @@ PLAYER_BIN = 'aplay'
 FAMIMAD_LOG = '/tmp/famimad_log'
 
 # Path to the log file which MOTION outputs
-WATCHING_FILE = '/tmp/famima.log'
+WATCHING_FILE = '/tmp/motion_triggered.log'
 
 # Path to famima sound
 FAMIMA_FILE = '/home/pi/dev/famima/famima.wav'
@@ -30,17 +27,6 @@ MIN_TRIGGER_TIME = 15
 WAIT_SEC = 1
 
 # ------------------------------------ #
-
-# AquesTalk
-class AquesTalk
-  def initialize
-  end
-
-  def talk(text)
-    system("#{AQUESTALK_BIN} '#{text}' | #{PLAYER_BIN}")
-    debug("Aquestalk said: #{text}")
-  end
-end
 
 # Watching the log file outputted by motion
 class MotionWatch
@@ -80,16 +66,13 @@ end
 # for debugging
 def debug(text)
   # STDERR.puts(text)
-  # system("echo #{text} >> #{FAMIMAD_LOG}")
+  system("echo #{text} >> #{FAMIMAD_LOG}")
 end
 
 # main proc.
 Daemons.run_proc(File.basename(__FILE__)) do
 
   # initialize
-  aquestalk = AquesTalk.new
-  aquestalk.talk("kidou kanryou!")
-
   mw = MotionWatch.new
   famima = FamimaSound.new
 
@@ -98,7 +81,5 @@ Daemons.run_proc(File.basename(__FILE__)) do
     famima.play if mw.triggered?
     sleep WAIT_SEC
   end
-
-  debug("loop end")
 end
 
