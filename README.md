@@ -10,3 +10,21 @@ A sound is played when we enter and leave famima. https://www.youtube.com/watch?
 ### setup
 
 ### start famimad
+
+```
+$ bundle install
+$ bundle exec ruby ./famimad.rb start
+```
+
+### stop famimad
+
+```
+$ bundle exec ruby ./famimad.rb stop
+```
+
+### help
+
+```
+$ bundle exec ruby ./famimad.rb
+```
+
